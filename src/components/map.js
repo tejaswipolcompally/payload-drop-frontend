@@ -1,37 +1,29 @@
-import React, { useState } from 'react';
-import Telemetry from './telemetry.js';
-import GoogleEarth from './map.js';
-import LiveFeed from './liveFeed.js';  // Case-sensitive match
+//AIzaSyBJyFrd8qkBZOaHD3MZuvGem1WJjGiCr5s
+import React from 'react';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
+const mapContainerStyle = {
+    height: "100%",
+    width: "100%" 
+};
 
-const App = () => {
-    const [coordinates, setCoordinates] = useState({
-        latitude: 17.374107667554952, // Default latitude
-        longitude: 78.5214 // Default longitude
-    });
+const center = {
+    lat: 17.374107667554952,
+    lng:  78.52142885420501 
+};
 
-    const handleCoordinatesChange = (newCoordinates) => {
-        setCoordinates(newCoordinates); // Update coordinates state with the new values
-    };
-
+const MapComponent = () => {
     return (
-        <div style={{ display: 'flex', height: '100vh' }}>
-            {/* Sidebar with Telemetry */}
-            <div style={{ flex: 0.5 }}>
-                <Telemetry coordinates={coordinates} onCoordinatesChange={handleCoordinatesChange} />
-            </div>
-
-            {/* Map and Camera Feed */}
-            <div style={{ flex: 2.5, position: 'relative' }}>
-                <GoogleEarth coordinates={coordinates} />
-
-                {/* LiveFeed component */}
-                <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 1000 }}>
-                    <LiveFeed />
-                </div>
-            </div>
-        </div>
+        <LoadScript googleMapsApiKey="AIzaSyBJyFrd8qkBZOaHD3MZuvGem1WJjGiCr5s">
+            <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                center={center}
+                zoom={10}
+            >
+                <Marker position={center} />
+            </GoogleMap>
+        </LoadScript>
     );
 };
 
-export default App;
+export default MapComponent;

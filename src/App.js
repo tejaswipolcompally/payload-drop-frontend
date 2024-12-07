@@ -1,54 +1,58 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import Telemetry from './components/telemetry.js';
-import GoogleEarth from './components/map.js';
-import LiveFeed from './components/liveFeed.js';
+import React, { useRef, useState } from 'react';
+import Navbar from './components/Navbar';
+import MissionPlanner from './components/missionplanner';
+import Telemetry from './components/telemetry';
+import GoogleEarth from './components/map';
+import './App.css';
 
-const App = () => {
-    const [coordinates, setCoordinates] = useState({
-        latitude: 17.374107667554952, // Default latitude
-        longitude: 78.5214 // Default longitude
-    });
+function App() {
+    const [telemetryWidth, setTelemetryWidth] = useState(250);
+    const resizerRef = useRef(null);
 
-    const handleCoordinatesChange = (newCoordinates) => {
-        setCoordinates(newCoordinates); // Update coordinates state with the new values
+    const handleMouseDown = (e) => {
+        e.preventDefault();
+        const startWidth = telemetryWidth;
+
+        const mouseMoveHandler = (event) => {
+            const newWidth = startWidth + (event.clientX - e.clientX);
+            setTelemetryWidth(newWidth > 200 ? newWidth : 200);
+        };
+
+        const mouseUpHandler = () => {
+            document.removeEventListener('mousemove', mouseMoveHandler);
+            document.removeEventListener('mouseup', mouseUpHandler);
+        };
+
+        document.addEventListener('mousemove', mouseMoveHandler);
+        document.addEventListener('mouseup', mouseUpHandler);
     };
 
     return (
-        <Router>
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-                {/* Navigation Menu */}
-                <nav style={{ padding: '10px', background: '#f0f0f0', display: 'flex' }}>
-                    <Link to="/" style={{ marginRight: '10px' }}>Home</Link>
-                    <Link to="/live-feed">Live Feed</Link>
-                </nav>
-
-                {/* Routing */}
-                <div style={{ flex: 1 }}>
-                    <Routes>
-                        {/* Home Page Route */}
-                        <Route
-                            path="/"
-                            element={
-                                <div style={{ display: 'flex', height: '100%' }}>
-                                    {/* Sidebar for Telemetry */}
-                                    <div style={{ flex: 0.5 }}>
-                                        <Telemetry coordinates={coordinates} onCoordinatesChange={handleCoordinatesChange} />
-                                    </div>
-                                    {/* Main area for Map */}
-                                    <div style={{ flex: 2.5 }}>
-                                        <GoogleEarth coordinates={coordinates} />
-                                    </div>
-                                </div>
-                            }
-                        />
-                        {/* Live Feed Page Route */}
-                        <Route path="/live-feed" element={<LiveFeed />} />
-                    </Routes>
+        <div className="app-container">
+            <div className="navbar-container">
+                <Navbar /> 
+            </div>
+            <div className="map-telemetry-container">
+                <div 
+                    className="telemetry-container" 
+                    style={{ width: `${telemetryWidth}px` }}
+                >
+                    <Telemetry />
+                </div>
+                <div 
+                    className="resizer" 
+                    ref={resizerRef} 
+                    onMouseDown={handleMouseDown} 
+                />
+                <div className="map-container">
+                    <GoogleEarth /> 
                 </div>
             </div>
-        </Router>
+            <div className="mission-planner-container">
+                <MissionPlanner />
+            </div>
+        </div>
     );
-};
+}
 
 export default App;
