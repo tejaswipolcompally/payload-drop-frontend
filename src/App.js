@@ -1,58 +1,27 @@
-import React, { useRef, useState } from 'react';
-import Navbar from './components/Navbar';
-import MissionPlanner from './components/missionplanner';
-import Telemetry from './components/telemetry';
-import GoogleEarth from './components/map';
-import './App.css';
+import {react} from 'react';
+import {Routes,Route, BrowserRouter} from 'react-router-dom';
+import LandingPage from './components/LandingPage';
+import DroneFeed from './components/dronefeed';
+import Login from './components/Login';
+import Register from './components/Register';
+import LocationButton from './components/LocationButton';
+import LiveFeed from './components/liveFeed';
 
-function App() {
-    const [telemetryWidth, setTelemetryWidth] = useState(250);
-    const resizerRef = useRef(null);
-
-    const handleMouseDown = (e) => {
-        e.preventDefault();
-        const startWidth = telemetryWidth;
-
-        const mouseMoveHandler = (event) => {
-            const newWidth = startWidth + (event.clientX - e.clientX);
-            setTelemetryWidth(newWidth > 200 ? newWidth : 200);
-        };
-
-        const mouseUpHandler = () => {
-            document.removeEventListener('mousemove', mouseMoveHandler);
-            document.removeEventListener('mouseup', mouseUpHandler);
-        };
-
-        document.addEventListener('mousemove', mouseMoveHandler);
-        document.addEventListener('mouseup', mouseUpHandler);
-    };
-
+const App= ()=>{
     return (
-        <div className="app-container">
-            <div className="navbar-container">
-                <Navbar /> 
-            </div>
-            <div className="map-telemetry-container">
-                <div 
-                    className="telemetry-container" 
-                    style={{ width: `${telemetryWidth}px` }}
-                >
-                    <Telemetry />
-                </div>
-                <div 
-                    className="resizer" 
-                    ref={resizerRef} 
-                    onMouseDown={handleMouseDown} 
-                />
-                <div className="map-container">
-                    <GoogleEarth /> 
-                </div>
-            </div>
-            <div className="mission-planner-container">
-                <MissionPlanner />
-            </div>
-        </div>
-    );
+        <BrowserRouter>
+
+        <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/droneFeed" element={<DroneFeed />} />
+            <Route path="/saveLocation" element={<LocationButton />} />
+            <Route path="/getFeed" element={<LiveFeed />} />
+        </Routes>
+        </BrowserRouter>
+    )
+
 }
 
 export default App;

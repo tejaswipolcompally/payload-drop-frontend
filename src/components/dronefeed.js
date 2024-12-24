@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 
 function DroneFeed() {
-    const [videoFeed, setVideoFeed] = useState('');
+    const [videoFeed, setVideoFeed] = useState(true);
 
     useEffect(() => {
         const socket = io('http://localhost:5000');
